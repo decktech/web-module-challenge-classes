@@ -85,11 +85,15 @@ class Car {
     this.tank += gallons;
   }
   drive(distance) {
-    this.odometer += distance;
-    this.tank -= distance / this.milesPerGallon;
-  if (this.tank === 0) {
-    return `I ran out of fuel at ${this.odometer}, miles!`
-  }
+    const drivableMiles = this.tank * this.milesPerGallon;
+    if (distance <= drivableMiles) {
+      this.odometer += distance;
+      this.tank -= distance / this.milesPerGallon;
+    } else {
+      this.odometer += drivableMiles;
+      this.tank = 0;
+      return `I ran out of fuel at ${this.odometer} miles!`
+    } 
   }
 }
 
@@ -107,7 +111,14 @@ class Car {
 */
 
 class Lambdasian {
-  
+  constructor(obj) {
+    this.name = obj.name;
+    this.age = obj.age;
+    this.location = obj.location;
+  }
+  speak() {
+    return `Hello my name is ${this.name}, I am from ${this.location}`
+  }
 }
 
 /*
@@ -125,8 +136,26 @@ class Lambdasian {
         + `grade` receives a `student` object and a `subject` string as arguments and returns '{student.name} receives a perfect score on {subject}'
 */
 
-class Instructor {
-
+class Instructor extends Lambdasian {
+  constructor(obj) {
+    super(obj);
+    this.specialty = obj.specialty;
+    this.favLanguage = obj.favLanguage;
+    this.catchPhrase = obj.catchPhrase;
+  }
+  demo(subject) {
+    return `Today we are learning about ${subject}`;
+  }
+  grade(studentObj, subject) {
+    return `${studentObj.name} receives a perfect score on ${subject}`
+  }
+  giveRandomGrade(studentObj) {
+    if (Math.random() < .5) {
+      return studentObj.grade += studentObj.grade * .20;
+    } else if (Math.random() > .5) {
+      return studentObj.grade -= studentObj.grade * .20;
+    }
+  }
 }
 
 /*
@@ -145,8 +174,24 @@ class Instructor {
         + `sprintChallenge` similar to PRAssignment but returns `student.name has begun sprint challenge on {subject}`
 */
 
-class Student {
-   
+class Student extends Lambdasian {
+   constructor(obj) {
+     super(obj);
+     this.previousBackground = obj.previousBackground;
+     this.className = obj.className;
+     this.favSubjects = obj.favSubjects;
+     this.grade = obj.grade;
+   }
+   listSubjects() {
+     return `Loving ${this.favSubjects.join(', ')}`;
+   }
+   PRAssignment(subject) {
+     return `${this.name} has submitted a PR for ${subject}`;
+   }
+   sprintChallenge(subject) {
+     return `${this.name} has begun sprint challenge on ${subject}`
+   }
+
 }
 
 /*
@@ -163,10 +208,25 @@ class Student {
         + `debugsCode` a method that takes in a student object and a subject and returns `{name} debugs {student.name}'s code on {subject}`
 */
 
-class ProjectManager {
-   
+class ProjectManager extends Instructor {
+   constructor(obj) {
+     super(obj);
+     this.gradClassName = obj.gradClassName;
+     this.favInstructor = obj.favInstructor;
+   }
+   standUp(channel) {
+     return `${this.name} announces to ${channel}, @channel standy times!`;
+   }
+   debugsCode(studentObj, subject) {
+     return `${this.name} debugs ${studentObj.name}'s code on ${subject}`
+   }
 }
-
+const matt = new Student({name: 'matt', age: 25, previousBackground: 'detail', grade: 90});
+const chad = new ProjectManager({name: 'chad', age: '??', favInstructor: 'keiran', catchPhrase: 'Big SUCC'});
+const keiran = new Instructor({name: 'keiran', age: '??', favLanguage: 'JS', catchPhrase: 'essentially'});
+//console.log(chad.debugsCode(matt, 'JS'));
+//console.log(keiran.giveRandomGrade(matt))
+//console.log(matt.grade)
 /*
   STRETCH PROBLEM (no tests!)
     - Extend the functionality of the Student by adding a prop called grade and setting it equal to a number between 1-100.
